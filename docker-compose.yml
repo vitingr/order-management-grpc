@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["/app/bin/gateway"]
+    ports:
+      - "8080:8080"
+    depends_on:
+      - orders
+      - payments
+      - kitchen
+      - stock
+
+  orders:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["/app/bin/orders"]
+    ports:
+      - "8081:8081"
+
+  payments:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["/app/bin/payments"]
+    ports:
+      - "8082:8082"
+
+  kitchen:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["/app/bin/kitchen"]
+    ports:
+      - "8083:8083"
+
+  stock:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["/app/bin/stock"]
+    ports:
+      - "8084:8084"

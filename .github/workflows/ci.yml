@@ -1,0 +1,41 @@
+name: "(CI): Verify Build And Plan"
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - master
+
+jobs:
+  continuos-integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.23.x
+
+      - name: Install dependencies
+        run: |
+          go mod tidy
+          go work sync
+
+      - name: Build Application
+        run: |
+          go build -o ./bin/gateway ./gateway
+          go build -o ./bin/orders ./orders
+          go build -o ./bin/payments ./payments
+          go build -o ./bin/kitchen ./kitchen
+          go build -o ./bin/stock ./stock
+
+      - name: Docker Build
+        run: |
+          docker build -t ci -f Dockerfile .
+
+      - name: Authorization
+        run: |
+          echo "Your Pull Request has been verified successfully! 🥳"
